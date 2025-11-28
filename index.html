@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftDreamzzz - Invoice Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- FORM SECTION -->
+    <div class="form-container" id="formSection">
+        <div class="form-header">
+            <h1>🎨 CraftDreamzzz Invoice Generator</h1>
+            <p>Fill the details below to create your booking invoice</p>
+        </div>
+
+        <div class="form-card">
+            <!-- Customer Details -->
+            <div class="form-section">
+                <h2 class="section-title">👤 Customer Details</h2>
+                <div class="input-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="customerName" placeholder="Enter customer name" class="input-field" required>
+                </div>
+                <div class="input-group">
+                    <label>Address *</label>
+                    <input type="text" id="customerAddress" placeholder="Enter complete address" class="input-field" required>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" id="customerPhone" placeholder="+91 XXXXX XXXXX" class="input-field" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Event Date *</label>
+                        <input type="date" id="eventDate" class="input-field" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Design Coverage -->
+            <div class="form-section">
+                <h2 class="section-title">🎨 Design Coverage</h2>
+                <div class="checkbox-grid">
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Fingers">
+                        <span>Fingers</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Palm">
+                        <span>Palm</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Wrist">
+                        <span>Wrist</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Forearm">
+                        <span>Forearm</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Elbow">
+                        <span>Elbow</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Back Hand">
+                        <span>Back Hand</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Full Hand">
+                        <span>Full Hand</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Toes">
+                        <span>Toes</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Ankle">
+                        <span>Ankle</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Feet">
+                        <span>Feet</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Full Feet">
+                        <span>Full Feet</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Knee">
+                        <span>Knee</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Knee Length">
+                        <span>Knee Length</span>
+                    </label>
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label>Selected Design / Code</label>
+                    <input type="text" id="selectedDesign" placeholder="Enter design name or code (e.g., DES001, Arabic Style)" class="input-field">
+                </div>
+            </div>
+
+            <!-- Occasion Type -->
+            <div class="form-section">
+                <h2 class="section-title">🎉 Occasion Type</h2>
+                <div class="checkbox-grid">
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Bridal">
+                        <span>Bridal</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Non-Bridal">
+                        <span>Non-Bridal</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Festival">
+                        <span>Festival</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Baby Shower">
+                        <span>Baby Shower</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Party">
+                        <span>Party</span>
+                    </label>
+                    <label class="checkbox-label">
+                        <input type="checkbox" class="checkbox" value="Other">
+                        <span>Other</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Event Details -->
+            <div class="form-section">
+                <h2 class="section-title">📅 Event Details</h2>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Event Time</label>
+                        <input type="time" id="eventTime" class="input-field">
+                    </div>
+                    <div class="input-group">
+                        <label>Total Members</label>
+                        <input type="number" id="totalMembers" placeholder="0" min="1" class="input-field">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Details -->
+            <div class="form-section">
+                <h2 class="section-title">💰 Payment Details</h2>
+                <div class="input-group">
+                    <label>Total Cost (₹) *</label>
+                    <input type="number" id="totalCost" placeholder="0" min="0" class="input-field" required>
+                </div>
+                <div class="input-group" style="margin-top: 15px;">
+                    <label class="checkbox-label" style="background: rgba(212, 175, 55, 0.1); padding: 12px; border-radius: 8px;">
+                        <input type="checkbox" id="firstOrderDiscount" class="checkbox">
+                        <span style="font-weight: bold; color: #4ade80;">Apply Discount</span>
+                    </label>
+                    <input type="number" id="discountAmount" placeholder="Enter discount amount" class="input-field" style="margin-top: 10px;">
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button class="btn btn-generate" onclick="generateInvoice()">
+                <span class="btn-icon">✨</span> Generate Invoice
+            </button>
+        </div>
+    </div>
+
+    <!-- INVOICE PREVIEW SECTION -->
+        <div class="invoice-container" id="invoiceSection" style="display: none;">
+            <div class="invoice-wrapper" id="invoice">
+                <div style="height: 20px; background: repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(212, 175, 55, 0.2) 10px, rgba(212, 175, 55, 0.2) 20px);"></div>
+                
+                <div class="invoice-header">
+                    <div class="logo-section">
+                        <img id="logoImage" alt="CraftDreamzzz Logo" class="logo">
+                        <svg class="brand-name-svg" viewBox="0 0 800 80" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img">
+                            <defs>
+                                <linearGradient id="goldGrad" x1="0" x2="1">
+                                <stop offset="0" stop-color="#d4af37"/>
+                                <stop offset="0.5" stop-color="#f4e5b8"/>
+                                <stop offset="1" stop-color="#d4af37"/>
+                                </linearGradient>
+                            </defs>
+                            <text x="50%" y="55%" text-anchor="middle"
+                                    font-family="Georgia, serif" font-size="36" font-weight="700"
+                                    fill="url(#goldGrad)">CraftDreamzzz</text>
+                            </svg>
+                        <p class="brand-tagline">✨ Professional Mehndi Artist ✨</p>
+                    </div>
+                    <div class="confirmed-badge">
+                        <span class="badge-icon">✓</span> BOOKING CONFIRMED
+                    </div>
+                </div>
+
+                <div class="invoice-section">
+                    <h2 class="section-title">👤 CUSTOMER DETAILS</h2>
+                    <div class="detail-row">
+                        <span class="label">Name:</span>
+                        <span class="value" id="displayName"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Address:</span>
+                        <span class="value" id="displayAddress"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Phone:</span>
+                        <span class="value" id="displayPhone"></span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="label">Event Date:</span>
+                        <span class="value" id="displayEventDate"></span>
+                    </div>
+                </div>
+
+                <div class="invoice-section">
+                    <h2 class="section-title">🎨 DESIGN COVERAGE</h2>
+                    <div class="checkbox-display" id="displayDesignCoverage"></div>
+                    <div class="detail-row" id="displayDesignCodeRow" style="margin-top: 10px; display: none;">
+                        <span class="label">Design Code:</span>
+                        <span class="value" id="displayDesignCode"></span>
+                    </div>
+                </div>
+
+                <div class="invoice-section">
+                    <h2 class="section-title">🎉 OCCASION TYPE</h2>
+                    <div class="checkbox-display" id="displayOccasion"></div>
+                </div>
+
+                <div class="invoice-section" id="eventDetailsSection">
+                    <h2 class="section-title">📅 EVENT DETAILS</h2>
+                    <div class="detail-row" id="displayTimeRow">
+                        <span class="label">Time:</span>
+                        <span class="value" id="displayTime"></span>
+                    </div>
+                    <div class="detail-row" id="displayMembersRow">
+                        <span class="label">Total Members:</span>
+                        <span class="value" id="displayMembers"></span>
+                    </div>
+                </div>
+
+                <div class="invoice-section payment-section">
+                    <h2 class="section-title">💰 PAYMENT BREAKDOWN</h2>
+                    <div class="payment-details">
+                        <div class="payment-row">
+                            <span>Total Cost:</span>
+                            <span class="amount" id="displayTotalCost">₹ 0</span>
+                        </div>
+                        <div class="payment-row discount-row" id="discountRowDisplay">
+                            <span>Discount:</span>
+                            <span class="amount discount" id="displayDiscount">- ₹ 0</span>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="payment-row subtotal-row">
+                            <span>Subtotal:</span>
+                            <span class="amount" id="displaySubtotal">₹ 0</span>
+                        </div>
+                        <div class="payment-row advance-row">
+                            <span>Advance Payment (25%):</span>
+                            <span class="amount advance" id="displayAdvance">₹ 0</span>
+                        </div>
+                        <div class="divider-bold"></div>
+                        <div class="payment-row total-row">
+                            <span>💰 ADVANCE PAID:</span>
+                            <span class="amount total" id="displayAdvancePaid">₹ 0</span>
+                        </div>
+                        <div class="payment-row balance-row">
+                            <span>Balance Due:</span>
+                            <span class="amount balance" id="displayBalance">₹ 0</span>
+                        </div>
+                    </div>
+                    <div class="fully-paid-badge" id="fullyPaidBadge" style="display: none;">
+                        <span class="badge-icon">✓</span> FULLY PAID
+                    </div>
+                </div>
+
+                <div class="invoice-section connect-section">
+                    <h2 class="section-title">📱 CONNECT WITH US</h2>
+                    <div class="connect-content">
+                        <div class="qr-codes-container">
+                            <div class="qr-code">
+                                <img id="qrImageInstagram" alt="Instagram QR" class="qr-image">
+                                <p class="qr-label">Instagram</p>
+                            </div>
+                            <div class="qr-code">
+                                <img id="qrImageYouTube" alt="YouTube QR" class="qr-image">
+                                <p class="qr-label">YouTube</p>
+                            </div>
+                        </div>
+                        <div class="contact-details">
+                            <p class="contact-item">📞 Phone: <span id="phoneNumber"></span></p>
+                            <p class="contact-item">💬 WhatsApp: <span id="whatsappNumber"></span></p>
+                            <p class="contact-item">📺 YouTube: <span id="youtubeChannel"></span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="booking-info">
+                    <p class="booking-id">BOOKING ID: <span id="bookingId"></span></p>
+                    <p class="booking-date">Date: <span id="bookingDate"></span></p>
+                </div>
+
+                <div class="terms-section">
+                    <h3>📋 TERMS & CONDITIONS</h3>
+                    <ul class="terms-list">
+                        <li>⚠️ Advance payment is non-refundable</li>
+                        <li>💵 Extra charges apply for additional members</li>
+                        <li>🚗 Travel charges applicable outside city limits</li>
+                        <li>🚫 Cancellation policy: No refund on cancellation</li>
+                        <li>✏️ Design changes must be requested 48 hours before the event</li>
+                        <li>⏰ Booking time slot is reserved exclusively for you</li>
+                    </ul>
+                </div>
+
+                <div class="invoice-footer">
+                    <p>Thank you for choosing CraftDreamzzz! 🎨✨</p>
+                </div>
+                
+                <!-- BOTTOM DECORATIVE STRIP - MUST BE INSIDE invoice-wrapper -->
+                <div style="height: 20px; background: repeating-linear-gradient(90deg, transparent, transparent 10px, rgba(212, 175, 55, 0.2) 10px, rgba(212, 175, 55, 0.2) 20px); border-radius: 0 0 20px 20px;"></div>
+            </div> <!-- END of invoice-wrapper -->
+
+            <div class="action-buttons">
+                <button class="btn btn-download" onclick="downloadPDF()">
+                    <span class="btn-icon">📥</span> Download PDF
+                </button>
+                <button class="btn btn-share" onclick="shareInvoice()">
+                    <span class="btn-icon">📤</span> Share Invoice
+                </button>
+                <button class="btn btn-back" onclick="backToForm()">
+                    <span class="btn-icon">✏️</span> Edit Details
+                </button>
+            </div>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="scripts/script.js"></script>
+</body>
+</html>
