@@ -33,7 +33,17 @@ window.addEventListener('DOMContentLoaded', function() {
         day: '2-digit', 
         month: 'short', 
         year: 'numeric' 
-    });document.getElementById('qrImageInstagram').src = IMAGES.qrInstagram;
+    });
+
+    const logoImgEl = document.getElementById('logoImage');
+    const qrInEl = document.getElementById('qrImageInstagram');
+    const qrYtEl = document.getElementById('qrImageYouTube');
+
+    [logoImgEl, qrInEl, qrYtEl].forEach(imgEl => {
+        if (imgEl) imgEl.crossOrigin = 'anonymous';
+    });
+    
+    document.getElementById('qrImageInstagram').src = IMAGES.qrInstagram;
     document.getElementById('bookingDate').textContent = formattedDate;
     
     const dateInput = document.getElementById('eventDate');
@@ -218,47 +228,56 @@ function backToForm() {
 
 async function downloadPDF() {
     const element = document.getElementById('invoice');
-    const customerName = document.getElementById('displayName').textContent;
-    const bookingID = document.getElementById('bookingId').textContent;
-    
+    const customerName = document.getElementById('displayName').textContent || 'Customer';
+    const bookingID = document.getElementById('bookingId').textContent || 'BOOKING';
+
     const actionButtons = document.querySelector('.action-buttons');
-    actionButtons.style.display = 'none';
-    
+    if (actionButtons) actionButtons.style.display = 'none';
+
+    // add pdf-mode class (keeps colors consistent for PDF)
     const wrapper = element;
     const originalClass = wrapper.className;
     wrapper.classList.add('pdf-mode');
-    
+
     try {
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff',
-            allowTaint: true
-        });
-        
+        // capture at high DPI with white background for PDF
+        const canvas = await captureElementHighDPI(element, { backgroundColor: '#ffffff' });
+
         const imgData = canvas.toDataURL('image/png');
         const { jsPDF } = window.jspdf;
         const pdf = new jsPDF('p', 'mm', 'a4');
-        
+
+        // convert canvas px to mm properly
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = pdf.internal.pageSize.getHeight();
-        const imgWidth = canvas.width;
-        const imgHeight = canvas.height;
-        const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-        const imgX = (pdfWidth - imgWidth * ratio) / 2;
-        const imgY = 0;
-        
-        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
-        pdf.save(`CraftDreamzzz_Invoice_${bookingID}_${customerName}.pdf`);
-        
+
+        // image size in pixels
+        const imgWidthPx = canvas.width;
+        const imgHeightPx = canvas.height;
+
+        // pixel to mm ratio for the chosen pdf page
+        const pxToMm = (px) => px * 0.264583; // 1 px ≈ 0.264583 mm at 96 DPI (approx). This works well for layout.
+        const imgWidthMm = pxToMm(imgWidthPx);
+        const imgHeightMm = pxToMm(imgHeightPx);
+
+        const ratio = Math.min(pdfWidth / imgWidthMm, pdfHeight / imgHeightMm);
+        const renderWidth = imgWidthMm * ratio;
+        const renderHeight = imgHeightMm * ratio;
+        const x = (pdfWidth - renderWidth) / 2;
+        const y = 5; // small top margin
+
+        pdf.addImage(imgData, 'PNG', x, y, renderWidth, renderHeight, undefined, 'FAST');
+        // sanitize filename
+        const safeName = customerName.replace(/[^\w\- ]+/g, '').trim() || 'Customer';
+        pdf.save(`CraftDreamzzz_Invoice_${bookingID}_${safeName}.pdf`);
+
         showNotification('✅ PDF Downloaded Successfully!', 'success');
     } catch (err) {
         console.error('PDF Error:', err);
         showNotification('❌ Error generating PDF. Try Share instead.', 'error');
     } finally {
         wrapper.className = originalClass;
-        actionButtons.style.display = 'flex';
+        if (actionButtons) actionButtons.style.display = 'flex';
     }
 }
 
@@ -279,26 +298,28 @@ document.getElementById('firstOrderDiscount').addEventListener('change', functio
 
 async function shareInvoice() {
     const element = document.getElementById('invoice');
-    const customerName = document.getElementById('displayName').textContent;
-    const bookingID = document.getElementById('bookingId').textContent;
-    
+    const customerName = document.getElementById('displayName').textContent || 'Customer';
+    const bookingID = document.getElementById('bookingId').textContent || 'BOOKING';
+
+    const actionButtons = document.querySelector('.action-buttons');
+    if (actionButtons) actionButtons.style.display = 'none';
+
     try {
-        const actionButtons = document.querySelector('.action-buttons');
-        actionButtons.style.display = 'none';
-        
-        const canvas = await html2canvas(element, {
-            scale: 2,
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#1a1a2e',
-            allowTaint: true
-        });
-        
-        actionButtons.style.display = 'flex';
-        
+        // use same high quality capture but with the page background you want for sharing
+        const canvas = await captureElementHighDPI(element, { backgroundColor: '#ffffff' });
+
+        // restore buttons before converting to blob so UI is back (canvas already captured)
+        if (actionButtons) actionButtons.style.display = 'flex';
+
         canvas.toBlob(async (blob) => {
-            const file = new File([blob], `Invoice_${bookingID}.png`, { type: 'image/png' });
-            
+            if (!blob) {
+                showNotification('❌ Failed to create image blob', 'error');
+                return;
+            }
+
+            const file = new File([blob], `CraftDreamzzz_Invoice_${bookingID}.png`, { type: 'image/png' });
+
+            // Use native share if available and canShare files
             if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
                     await navigator.share({
@@ -307,29 +328,29 @@ async function shareInvoice() {
                         files: [file]
                     });
                     showNotification('✅ Invoice Shared Successfully!', 'success');
+                    return;
                 } catch (err) {
+                    // user may cancel; fall back to download
                     if (err.name !== 'AbortError') {
-                        fallbackShare(canvas, bookingID);
+                        console.warn('Share error:', err);
                     }
                 }
-            } else {
-                fallbackShare(canvas, bookingID);
             }
-        }, 'image/png');
-        
+
+            // Fallback: force download so user can share manually
+            const link = document.createElement('a');
+            link.download = `CraftDreamzzz_Invoice_${bookingID}.png`;
+            link.href = URL.createObjectURL(blob);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            showNotification('📥 Invoice image downloaded! You can now share it manually.', 'info');
+        }, 'image/png', 1.0);
     } catch (err) {
         console.error('Canvas Error:', err);
         showNotification('❌ Error generating image. Please try Download PDF instead.', 'error');
-        document.querySelector('.action-buttons').style.display = 'flex';
+        if (actionButtons) actionButtons.style.display = 'flex';
     }
-}
-
-function fallbackShare(canvas, bookingID) {
-    const link = document.createElement('a');
-    link.download = `CraftDreamzzz_Invoice_${bookingID}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    showNotification('📥 Invoice image downloaded! You can now share it manually.', 'info');
 }
 
 // ============================================
@@ -424,6 +445,36 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+// ------------------------
+// Helper: capture element with device-aware scale
+// ------------------------
+async function captureElementHighDPI(element, options = {}) {
+    // options: { backgroundColor: '#ffffff' }
+    const devicePR = window.devicePixelRatio || 1;
+    // choose scale relative to devicePixelRatio, but cap to avoid OOM on old devices
+    const scale = Math.min(4, Math.max(1, Math.round(devicePR * 2))); // e.g. DPR 3 -> scale 6 (capped to 4)
+    const bg = options.backgroundColor ?? '#ffffff';
+
+    // ensure element dimensions used for canvas sizing
+    const rect = element.getBoundingClientRect();
+    const width = Math.ceil(element.scrollWidth);
+    const height = Math.ceil(element.scrollHeight);
+
+    return await html2canvas(element, {
+        scale,
+        useCORS: true,
+        logging: false,
+        backgroundColor: bg,
+        allowTaint: false, // require CORS or base64 images for full fidelity
+        width: width,
+        height: height,
+        windowWidth: Math.max(document.documentElement.clientWidth, width),
+        windowHeight: Math.max(document.documentElement.clientHeight, height),
+        scrollY: -window.scrollY
+    });
+}
+
 console.log('%c🎨 CraftDreamzzz Invoice Generator 🎨', 'color: #d4af37; font-size: 20px; font-weight: bold;');
 console.log('%cMade with ❤️ for professional mehndi artists', 'color: #ffa500; font-size: 12px;');
+
 console.log('%cBase64 Image Mode - No CORS Issues!', 'color: #22c55e; font-size: 12px;');
