@@ -178,7 +178,7 @@ function generateInvoice() {
     const discountInput = parseFloat(document.getElementById('discountAmount').value) || 0;
     const discount = applyDiscount ? discountInput : 0;
     const subtotal = cost - discount;
-    const advance = subtotal * 0.25;
+    const advance = subtotal * 0.20;
     const balance = subtotal - advance;
     
     document.getElementById('displayTotalCost').textContent = `₹ ${cost.toLocaleString('en-IN')}`;
